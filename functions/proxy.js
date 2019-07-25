@@ -17,12 +17,12 @@ exports.handler = async (event, context, callback) => {
         return;
     }
 */
-
+    const path = "https://snaptageditor.com/webApp/resources/ajax/generate.php";
     const response = await new Promise((resolve, reject) => {
         let originalRequestBody = event.body;
         console.log(event.body);
         const stream = request({
-            url: "https://snaptageditor.com/webApp/resources/ajax/generate.php",
+            url: path,
             method: event.httpMethod,
             timeout: 10000,
             form: event.httpMethod === 'POST' && formToJSON(originalRequestBody),
