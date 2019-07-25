@@ -1,7 +1,7 @@
 Object.fromEntries = arr => Object.assign({}, ...Array.from(arr, ([k, v]) => ({[k]: v}) ));
 // Request API data and merge by timeline
 const request = require('request');
-
+const https = require('https');
 exports.handler = async (event, context, callback) => {
     const params = Object.keys(event.queryStringParameters).map(key => key + '=' + event.queryStringParameters[key]).join('&');
 /*
