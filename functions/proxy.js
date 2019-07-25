@@ -1,4 +1,13 @@
 Object.fromEntries = arr => Object.assign({}, ...Array.from(arr, ([k, v]) => ({[k]: v}) ));
+function parseUrlEncoded(urlEncodedString) {
+  const keyValuePairs = urlEncodedString.split('&');
+  return keyValuePairs.reduce((acc, kvPairString) => {
+    const [k, v] = kvPairString.split('=');
+    acc[k] = v;
+    return acc;
+  }, {});
+}
+
 // Request API data and merge by timeline
 const request = require('request');
 const https = require('https');
