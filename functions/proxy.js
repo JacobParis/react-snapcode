@@ -18,11 +18,12 @@ exports.handler = async (event, context, callback) => {
 
     const response = await new Promise((resolve, reject) => {
         let originalRequestBody = event.body;
+        console.log(event.body);
         const stream = request({
             url: path,
             method: event.httpMethod,
             timeout: 10000,
-            json: event.httpMethod === 'POST' && JSON.parse(originalRequestBody),
+            form: event.httpMethod === 'POST' && JSON.parse(originalRequestBody),
         }, (err, originalResponse, body) => {
             if (err) {
                 callback(err);
