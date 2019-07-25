@@ -26,6 +26,12 @@ exports.handler = async (event, context, callback) => {
             method: event.httpMethod,
             timeout: 10000,
             form: event.httpMethod === 'POST' && formToJSON(originalRequestBody),
+            agent: new https.Agent({
+                host: 'snaptageditor.com',
+                port: '443',
+                path: '/webApp/resources/ajax/generate.php',
+                rejectUnauthorized: false
+            })
         }, (err, originalResponse, body) => {
             if (err) {
                 callback(err);
