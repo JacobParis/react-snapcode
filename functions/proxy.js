@@ -17,15 +17,20 @@ exports.handler = async (event, context, callback) => {
         return;
     }
 */
+    console.log(event);
     const path = "https://snaptageditor.com/webApp/resources/ajax/generate.php";
     const response = await new Promise((resolve, reject) => {
-        let originalRequestBody = event.body;
-        console.log(event);
+        const username = event.isBase64Encoded ? (
+            parseUrlEncoded(Buffer.from(event.body, 'base64').toString('utf-8'))
+        ) : (
+            formToJSON(event.body)
+        )
+        console.log(username);
         const stream = request({
             url: path,
             method: event.httpMethod,
             timeout: 10000,
-            form: event.httpMethod === 'POST' && formToJSON(originalRequestBody),
+            form: event.httpMethod === 'POST' && username,
             agent: new https.Agent({
                 host: 'snaptageditor.com',
                 port: '443',
