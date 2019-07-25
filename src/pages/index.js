@@ -12,6 +12,7 @@ function IndexPage() {
     const [avatar, setAvatar] = React.useState();
 
     const getResult = React.useCallback(() => {
+        console.log("Submitting",  username);
         const formData = new FormData();
         formData.append("username", username);
 
