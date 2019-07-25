@@ -3,7 +3,7 @@ const request = require('request');
 
 exports.handler = async (event, context, callback) => {
     const params = Object.keys(event.queryStringParameters).map(key => key + '=' + event.queryStringParameters[key]).join('&');
-
+/*
     const path = `${event.path.replace(/.*http/, 'http')}?${params}`;
     if (!path) {
         const errorResponse = {
@@ -15,15 +15,16 @@ exports.handler = async (event, context, callback) => {
 
         return;
     }
+*/
 
     const response = await new Promise((resolve, reject) => {
         let originalRequestBody = event.body;
         console.log(event.body);
         const stream = request({
-            url: path,
+            url: "https://snaptageditor.com/webApp/resources/ajax/generate.php",
             method: event.httpMethod,
             timeout: 10000,
-            form: event.httpMethod === 'POST' && JSON.parse(originalRequestBody),
+            form: event.httpMethod === 'POST' && formToJSON(originalRequestBody),
         }, (err, originalResponse, body) => {
             if (err) {
                 callback(err);
@@ -59,6 +60,8 @@ exports.handler = async (event, context, callback) => {
     });
 
     //if(response.statusCode !== 200) return response;
+
+    
     const body = response.body;
     
     return {
@@ -69,3 +72,7 @@ exports.handler = async (event, context, callback) => {
         body: body
     }
 };
+
+function formToJSON(form) {
+    return Object.fromEntries([form.split('=')])
+}
