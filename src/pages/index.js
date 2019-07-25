@@ -7,7 +7,7 @@ import SEO from "../components/seo"
 
 function IndexPage() {
     const [username, setUsername] = React.useState();
-    const updateUsername = React.useCallback(e => setUsername(e.value), []);
+    const updateUsername = React.useCallback(e => setUsername(e.target.value), []);
     
     const [avatar, setAvatar] = React.useState();
 
@@ -30,7 +30,7 @@ function IndexPage() {
         <Layout>
             <SEO title="Home" />
             <h1>Hi people</h1>
-            <input type="text" onChange={updateUsername} />
+            <input type="text" onInput={updateUsername} />
             <button onClick={getResult}>Get Snapcode</button>
             <SVG svg={avatar} />
             <Link to="/page-2/">Go to page 2</Link>
