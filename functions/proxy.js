@@ -20,7 +20,7 @@ exports.handler = async (event, context, callback) => {
     const path = "https://snaptageditor.com/webApp/resources/ajax/generate.php";
     const response = await new Promise((resolve, reject) => {
         let originalRequestBody = event.body;
-        console.log(event.body);
+        console.log(event);
         const stream = request({
             url: path,
             method: event.httpMethod,
