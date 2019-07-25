@@ -1,3 +1,4 @@
+Object.fromEntries = arr => Object.assign({}, ...Array.from(arr, ([k, v]) => ({[k]: v}) ));
 // Request API data and merge by timeline
 const request = require('request');
 
