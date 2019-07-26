@@ -13,12 +13,12 @@ function IndexPage() {
 
     const getResult = React.useCallback(() => {
         console.log("Submitting",  username);
-        const formData = new FormData();
-        formData.append("username", username);
 
         fetch(".netlify/functions/proxy/", {
             method: 'POST',
-            body: formData
+            body: {
+                username: username
+            }
         })
         .then(response => response.text())
         .then(result => {

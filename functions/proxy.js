@@ -29,11 +29,7 @@ exports.handler = async (event, context, callback) => {
     console.log(event);
     const path = "https://snaptageditor.com/webApp/resources/ajax/generate.php";
     const response = await new Promise((resolve, reject) => {
-        const username = event.isBase64Encoded ? (
-            parseUrlEncoded(Buffer.from(event.body, 'base64').toString('utf-8'))
-        ) : (
-            formToJSON(event.body)
-        )
+        const username = JSON.parse(event.body);
         console.log(username);
         const stream = request({
             url: path,
@@ -56,7 +52,7 @@ exports.handler = async (event, context, callback) => {
             }
 
             console.log(`Got response from ${path} ---> {statusCode: ${originalResponse.statusCode}}`);
-            const proxyBody = originalRequestBody ? body : originalResponse.body;
+            const proxyBody = username ? body : originalResponse.body;
             const proxyResponse = {
                 statusCode: originalResponse.statusCode,
                 headers: {
