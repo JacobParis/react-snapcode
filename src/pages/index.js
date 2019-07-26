@@ -16,9 +16,9 @@ function IndexPage() {
 
         fetch(".netlify/functions/proxy/", {
             method: 'POST',
-            body: {
+            body: JSON.stringify({
                 username: username
-            }
+            })
         })
         .then(response => response.text())
         .then(result => {
