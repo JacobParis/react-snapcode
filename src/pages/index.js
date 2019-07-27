@@ -45,7 +45,7 @@ function IndexPage() {
 
     return (
         <Layout>
-            <SEO title="Home" />
+            <SEO title="Snapcode Generator" />
             <h1>Enter your username</h1>
             <form onSubmit={getResult}>
                 <input class="input" placeholder="Username" type="text" onInput={updateUsername} />
