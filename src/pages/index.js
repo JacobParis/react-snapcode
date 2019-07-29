@@ -26,11 +26,17 @@ function IndexPage() {
     }, []);
     
     const [avatar, setAvatar] = React.useState();
+    const [isLoading, setLoading] = React.useState(false);
 
     const getResult = React.useCallback(e => {
         e.preventDefault();
-        console.log("Submitting",  username);
 
+        if(!isValid || isEmpty) {
+            setValid(false);
+            return;
+        }
+        console.log("Submitting",  username);
+        setLoading(true);
         fetch(".netlify/functions/proxy/", {
             method: 'POST',
             body: JSON.stringify({
@@ -39,6 +45,7 @@ function IndexPage() {
         })
         .then(response => response.text())
         .then(result => {
+            setLoading(false);
             setAvatar(result);
         })
     }, [username]);
@@ -50,7 +57,7 @@ function IndexPage() {
             <form onSubmit={getResult}>
                 <input class="input" placeholder="Username" type="text" onInput={updateUsername} />
                 <div>
-                    <button class="button button-snapchat" type="submit">Snapchat</button>
+                    <button class="button button-snapchat" type="submit">{isLoading ? "Loading" : "Snapchat"}</button>
                 </div>
                 <FormError isValid={isValid} isEmpty={isEmpty} />
             </form>
