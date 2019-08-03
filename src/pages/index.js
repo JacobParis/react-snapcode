@@ -14,7 +14,7 @@ function IndexPage() {
     const [isLocked, setLocked] = React.useState(false);
     return (
         <Layout>
-            <SEO title="Snapcode Generator" />
+            <SEO title="My Snapcode" />
             
             <Form isLocked={isLocked} setAvatar={setAvatar} setUsername={setUsername} username={username} setLocked={setLocked}/>
             <Snapcode username={username} isHidden={!isLocked} avatar={avatar} />
@@ -33,7 +33,7 @@ function Snapcode({isHidden, avatar, username}) {
                 <SVGContainer>
                     <SVG svg={avatar} isRotated={isRotated} showBitmoji={showBitmoji} />
                 </SVGContainer>
-                <UsernameLabel isOffset={isRotated} isHidden={!showName}>{username}</UsernameLabel>
+                <UsernameLabel isOffset={isRotated} isHidden={!showName}>@{username}</UsernameLabel>
             </div>
             <Setting label="Diamond Shape" state={isRotated} setState={setRotated} />
             <Setting label="Display Name" state={showName} setState={setShowName} />
