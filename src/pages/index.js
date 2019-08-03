@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "gatsby";
 import styled from 'styled-components';
 import Switch from 'react-switch';
-
+import Button from "../components/button";
 import Form from "../components/form";
 import Layout from "../components/layout";
 import SEO from "../components/seo";
@@ -11,21 +11,40 @@ function IndexPage() {
     const [username, setUsername] = React.useState("jacobpariseau");
     const [avatar, setAvatar] = React.useState();
     const [isLocked, setLocked] = React.useState(false);
+
+    const onDone = ({showName, showBitmoji, isRotated}) => {
+        fetch(".netlify/functions/download/", {
+            method: 'POST',
+            body: JSON.stringify({
+                username,
+                showBitmoji,
+                showName,
+                isRotated
+            })
+        })
+        .then(response => response.text())
+        .then(result => {
+            console.log(result);
+            setAvatar(result);
+        })
+    };
+
     return (
         <Layout>
             <SEO title="My Snapcode" />
             
             <Form isLocked={isLocked} setAvatar={setAvatar} setUsername={setUsername} username={username} setLocked={setLocked}/>
-            <Snapcode username={username} isHidden={!isLocked} avatar={avatar} />
+            <Snapcode username={username} isHidden={!isLocked} avatar={avatar} onDone={onDone} />
         </Layout>
     )
 }
 
-function Snapcode({isHidden, avatar, username}) {
+function Snapcode({isHidden, avatar, username, onDone}) {
     const [isRotated, setRotated] = React.useState(false);
     const [showBitmoji, setShowBitmoji] = React.useState(true);
     const [showName, setShowName] = React.useState(true);
 
+    const callDone = React.useCallback(() => false);
     return isHidden ? null : (
         <div>
             <div>
@@ -37,7 +56,7 @@ function Snapcode({isHidden, avatar, username}) {
             <Setting label="Diamond Shape" state={isRotated} setState={setRotated} />
             <Setting label="Display Name" state={showName} setState={setShowName} />
             <Setting label="Display Bitmoji" state={showBitmoji} setState={setShowBitmoji} />
-            
+            <Button onClick={callDone}>Buy</Button>
         </div>
     )
 }
@@ -88,12 +107,12 @@ const SVG = styled.div.attrs({
     right: 0;
     margin: 0 0 2rem 0;
     max-height: 100vw;
-    transition: transform 0.6s cubic-bezier(0.6, -0.28, 0.735, 0.045);
+    transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
     transform: ${({isRotated}) => isRotated ? `rotate(225deg)` : `initial`};
     & image {
         transform: ${({isRotated}) => isRotated ? `rotate(135deg)` : `initial`};
         transform-origin: center;
-        transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55),
+        transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275),
                     opacity 0.4s;
         opacity: ${({showBitmoji}) => showBitmoji ? 1 : 0}
     }
