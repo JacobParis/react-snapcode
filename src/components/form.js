@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import Button from "../components/button";
 
 export default function Form({isLocked, setLocked, setAvatar, setUsername, username}) {
     const [isValid, setValid] = React.useState(false);
@@ -50,23 +51,15 @@ export default function Form({isLocked, setLocked, setAvatar, setUsername, usern
         <Button onClick={unlock}>Different User</Button>
     ) : (
         <form onSubmit={getResult}>
-            <input class="input" placeholder="Username" type="text" onInput={updateUsername} />
+            <input className="input" placeholder="Username" type="text" onInput={updateUsername} />
             <div>
-                <button class="button button-snapchat" type="submit">{isLoading ? "Loading" : "Snapchat"}</button>
+                <Button type="submit">{isLoading ? "Loading" : "Snapchat"}</Button>
             </div>
             <FormError isValid={isValid} isEmpty={isEmpty} />
         </form>
     );
 }
 
-const Button = styled.button`
-    background: yellow;
-    border: 4px solid;
-    border-radius: 1rem;
-    padding: 0.5rem 1rem;
-    font-weight: bold;
-    margin-bottom: 4rem;
-`;
 function FormError({isValid, isEmpty}) {
 
     return (isValid || isEmpty) ? (

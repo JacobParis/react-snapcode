@@ -1,9 +1,9 @@
 const proxy = require("http-proxy-middleware");
 module.exports = {
   siteMetadata: {
-    title: `Snapcode Generator`,
+    title: `My Snapcode`,
     description: `Generate a QR Code that links to your snapchat profile`,
-    author: `@jacobparis`,
+    author: `@jacobmparis`,
   },
   plugins: [
     `gatsby-plugin-react-helmet`,

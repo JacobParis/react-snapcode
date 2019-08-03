@@ -5,11 +5,10 @@ import Switch from 'react-switch';
 
 import Form from "../components/form";
 import Layout from "../components/layout";
-import Image from "../components/image";
 import SEO from "../components/seo";
 
 function IndexPage() {
-    const [username, setUsername] = React.useState();
+    const [username, setUsername] = React.useState("jacobpariseau");
     const [avatar, setAvatar] = React.useState();
     const [isLocked, setLocked] = React.useState(false);
     return (
@@ -24,8 +23,8 @@ function IndexPage() {
 
 function Snapcode({isHidden, avatar, username}) {
     const [isRotated, setRotated] = React.useState(false);
-    const [showBitmoji, setShowBitmoji] = React.useState(false);
-    const [showName, setShowName] = React.useState(false);
+    const [showBitmoji, setShowBitmoji] = React.useState(true);
+    const [showName, setShowName] = React.useState(true);
 
     return isHidden ? null : (
         <div>
