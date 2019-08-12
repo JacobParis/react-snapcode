@@ -13,7 +13,7 @@ function IndexPage() {
     const [isLocked, setLocked] = React.useState(false);
 
     const onDone = ({showName, showBitmoji, isRotated}) => {
-        fetch(".netlify/functions/download/", {
+        fetch("http://localhost:3000/api/download", {
             method: 'POST',
             body: JSON.stringify({
                 username,
@@ -25,13 +25,12 @@ function IndexPage() {
         .then(response => response.text())
         .then(result => {
             console.log(result);
-            setAvatar(result);
         })
     };
 
     return (
         <Layout>
-            <SEO title="My Snapcode" />
+            <SEO title="Tag the Planet" />
             
             <Form isLocked={isLocked} setAvatar={setAvatar} setUsername={setUsername} username={username} setLocked={setLocked}/>
             <Snapcode username={username} isHidden={!isLocked} avatar={avatar} onDone={onDone} />
@@ -42,9 +41,9 @@ function IndexPage() {
 function Snapcode({isHidden, avatar, username, onDone}) {
     const [isRotated, setRotated] = React.useState(false);
     const [showBitmoji, setShowBitmoji] = React.useState(true);
-    const [showName, setShowName] = React.useState(true);
+    const [showName, setShowName] = React.useState(false);
 
-    const callDone = React.useCallback(() => false);
+    const callDone = React.useCallback(() => onDone({showName, showBitmoji, isRotated}));
     return isHidden ? null : (
         <div>
             <div>
@@ -54,12 +53,27 @@ function Snapcode({isHidden, avatar, username, onDone}) {
                 <UsernameLabel isOffset={isRotated} isHidden={!showName}>@{username}</UsernameLabel>
             </div>
             <Setting label="Diamond Shape" state={isRotated} setState={setRotated} />
-            <Setting label="Display Name" state={showName} setState={setShowName} />
-            <Setting label="Display Bitmoji" state={showBitmoji} setState={setShowBitmoji} />
-            <Button onClick={callDone}>Buy</Button>
+            
+            <a href="https://gum.co/gzwTW">
+                <Button onClick={callDone}>Buy</Button>
+            </a>
+            
         </div>
     )
 }
+
+function GumroadButton({href, children}) {
+    
+
+    return (
+        <a className="gumroad-button" href={href}>
+            {children}
+        </a>
+    )
+}
+
+//<Setting label="Display Name" state={showName} setState={setShowName} />
+//<Setting label="Display Bitmoji" state={showBitmoji} setState={setShowBitmoji} />
 
 const SettingRow = styled.label`
     display: flex;

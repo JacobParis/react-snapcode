@@ -70,6 +70,7 @@ function SEO({ description, lang, meta, title }) {
       ].concat(meta)}
     >
         <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet"></link>
+        <script src="https://assets.gumroad.com/assets/gumroad-overlay-2366dc6840fafc546a0c74cc2d6bd9aafb3164f6f96c2a301c70fe378da663dd.js"></script>
     </Helmet>
   )
 }

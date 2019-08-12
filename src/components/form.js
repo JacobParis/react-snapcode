@@ -53,7 +53,7 @@ export default function Form({isLocked, setLocked, setAvatar, setUsername, usern
         <form onSubmit={getResult}>
             <input className="input" placeholder="Username" type="text" onInput={updateUsername} />
             <div>
-                <Button type="submit">{isLoading ? "Loading" : "Snapchat"}</Button>
+                <Button type="submit">{isLoading ? "Loading" : "Get Tag"}</Button>
             </div>
             <FormError isValid={isValid} isEmpty={isEmpty} />
         </form>

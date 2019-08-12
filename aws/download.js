@@ -1,10 +1,17 @@
-Object.fromEntries = arr => Object.assign({}, ...Array.from(arr, ([k, v]) => ({[k]: v}) ));
-
-// Request API data and merge by timeline
 const request = require('request');
 const https = require('https');
+const PDFDocument = require('pdfkit');
+const SVGtoPDF = require('svg-to-pdfkit');
+const fs = require('fs');
+const AWS = require('aws-sdk');
+const S3 = new AWS.S3();
+
+PDFDocument.prototype.addSVG = function(svg, x, y, options) {
+  return SVGtoPDF(this, svg, x, y, options), this;
+};
+
 exports.handler = async (event, context, callback) => {
-    
+    const options = JSON.parse(event.body);
 /*
     const path = `${event.path.replace(/.*http/, 'http')}?${params}`;
     if (!path) {
@@ -18,15 +25,15 @@ exports.handler = async (event, context, callback) => {
         return;
     }
 */
+/aaa/bbb/ccc.ddd
     const path = "https://snaptageditor.com/webApp/resources/ajax/generate.php";
     const response = await new Promise((resolve, reject) => {
-        const username = JSON.parse(event.body);
-        console.log(username);
+        console.log(event.body);
         const stream = request({
             url: path,
             method: event.httpMethod,
             timeout: 10000,
-            form: event.httpMethod === 'POST' && username,
+            form: event.httpMethod === 'POST' && options,
             agent: new https.Agent({
                 host: 'snaptageditor.com',
                 port: '443',
@@ -43,7 +50,7 @@ exports.handler = async (event, context, callback) => {
             }
 
             console.log(`Got response from ${path} ---> {statusCode: ${originalResponse.statusCode}}`);
-            const proxyBody = username ? body : originalResponse.body;
+            const proxyBody = options ? body : originalResponse.body;
             const proxyResponse = {
                 statusCode: originalResponse.statusCode,
                 headers: {
@@ -68,19 +75,50 @@ exports.handler = async (event, context, callback) => {
     });
 
     //if(response.statusCode !== 200) return response;
+    let svg = response.body;
 
+    if(options.isRotated) {
+        svg = svg.replace("<image", `<image transform="rotate(-45) translate(-160 64.52)"`);
+    }
+
+    const doc = new PDFDocument();
+    doc.addSVG(svg, 0, 0);
+    doc.save();
     
-    const body = response.body;
-    
+    const file = await savePdfToFile(doc, "test.pdf");
+
     return {
         statusCode: 200,
         headers: {
             'Content-Type': 'text/html'
         },
-        body: body
+        body: file
     }
 };
 
-function formToJSON(form) {
-    return Object.fromEntries([form.split('=')])
+function savePdfToFile(pdf, fileName) {
+  return new Promise((resolve, reject) => {
+
+    // To determine when the PDF has finished being written successfully 
+    // we need to confirm the following 2 conditions:
+    //
+    //   1. The write stream has been closed
+    //   2. PDFDocument.end() was called syncronously without an error being thrown
+
+    let pendingStepCount = 2;
+
+    const stepFinished = () => {
+      if (--pendingStepCount == 0) {
+        resolve();
+      }
+    };
+
+    const writeStream = fs.createWriteStream(fileName);
+    writeStream.on('close', stepFinished);
+    pdf.pipe(writeStream);
+
+    pdf.end();
+
+    stepFinished();
+  });
 }

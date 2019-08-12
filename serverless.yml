@@ -1,0 +1,84 @@
+service: stache-assets
+
+frameworkVersion: ">=1.1.0 <2.0.0"
+
+plugins:
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  region: us-west-2
+  stage: dev
+  environment:
+    TABLE_PREFIX: ${self:service}-${opt:stage, self:provider.stage}
+
+functions:
+  download:
+    handler: aws/download.handler
+    events:
+      - http:
+          path: api/download
+          method: post
+          cors: true
+          integration: lambda-proxy
+          response:
+            body:
+              Content-Type: "application/json"
+
+resources:
+  Resources:
+    Stickers:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: stickers
+    LambdaRole:
+      Type: 'AWS::IAM::Role'
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service: lambda.amazonaws.com
+              Action:
+                - 'sts:AssumeRole'
+        Path: /
+        Policies:
+          - PolicyName: logs
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - 'logs:*'
+                  Resource: 'arn:aws:logs:*:*:*'
+
+          - PolicyName: dynamodb
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Sid: '1'
+                  Effect: Allow
+                  Action:
+                    - dynamodb:Query
+                    - dynamodb:Scan
+                    - dynamodb:GetItem
+                    - dynamodb:PutItem
+                    - dynamodb:UpdateItem
+                    - dynamodb:DeleteItem
+                  Resource: 
+                    - arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.TABLE_PREFIX}-items
+                    - arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.TABLE_PREFIX}-txs
+                    - arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.TABLE_PREFIX}-users
+                    - arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.TABLE_PREFIX}-jobs
+                - Sid: '2'
+                  Effect: Allow
+                  Action:
+                    - dynamodb:Query
+                    - dynamodb:Scan
+                  Resource: 
+                    - arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.TABLE_PREFIX}-items/index/*
+                    - arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.TABLE_PREFIX}-txs/index/*
+                    - arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.TABLE_PREFIX}-users/index/*
+                    - arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.TABLE_PREFIX}-jobs/index/*
