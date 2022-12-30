@@ -5,7 +5,7 @@
   "version": "0.1.0",
   "author": "Kyle Mathews <mathews.kyle@gmail.com>",
   "dependencies": {
-    "gatsby": "^2.13.39",
+    "gatsby": "^2.32.13",
     "gatsby-image": "^2.2.6",
     "gatsby-plugin-manifest": "^2.2.4",
     "gatsby-plugin-offline": "^2.2.4",
@@ -19,7 +19,7 @@
     "react-dom": "^16.8.6",
     "react-helmet": "^5.2.1",
     "react-switch": "^5.0.1",
-    "serverless": "^1.49.0",
+    "serverless": "^1.83.3",
     "serverless-offline": "^5.9.0",
     "styled-components": "^4.3.2",
     "svg-to-pdfkit": "^0.1.7"
